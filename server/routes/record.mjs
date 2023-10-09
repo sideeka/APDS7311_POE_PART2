@@ -1,6 +1,8 @@
 import express from "express";
 import db from "../db/conn.mjs";
 import { ObjectId } from "mongodb";
+import jwt from "jsonwebtoken";
+import CheckAuth from "../check-auth.mjs";
 
 const router = express.Router();
 
@@ -22,7 +24,10 @@ router.get("/:id", async (req, res) => {
 });
 
 // This section will help you create a new record.
+
+/*
 router.post("/", async (req, res) => {
+ 
   let newDocument = {
     name: req.body.name,
     position: req.body.position,
@@ -31,6 +36,20 @@ router.post("/", async (req, res) => {
   let collection = await db.collection("records");
   let result = await collection.insertOne(newDocument);
   res.send(result).status(204);
+});
+*/
+router.post("/create", (req, res) => {
+ const checkAuth = new CheckAuth(req,res,() => {
+  let newDocument = {
+    name: req.body.name,
+    position: req.body.position,
+    level: req.body.level,
+};
+  let collection =  db.collection("records");
+  let result = collection.insertOne(newDocument);
+  res.send(result).status(204);
+});
+checkAuth.checkToken();
 });
 
 // This section will help you update a record by id.

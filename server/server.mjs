@@ -9,6 +9,7 @@ import users from "./routes/user.mjs"
 
 import dotenv from "dotenv"
 import https from "https";
+import { nextTick } from "process";
 //import path from "path";
 
 dotenv.config();
@@ -27,6 +28,15 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
+app.use ((reg,res,next)=>
+{
+  res.setHeader('Access-Control-Allow-Origins','*');
+  res.setHeader('Access-Control-Allow-Headers','*');
+  res.setHeader('Access-Control-Allow-Methods','*');
+  next();
+})
+
 
 app.use("/record", records);
 app.use("/user",users);
